@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.service.annotation.GetExchange;
@@ -17,6 +18,7 @@ import br.com.xavecoding.regescweb.dto.RequisicaoNovoProfessor;
 import br.com.xavecoding.repositories.ProfessorRepository;
 import ch.qos.logback.core.net.SyslogOutputStream;
 import ch.qos.logback.core.util.StatusPrinter;
+import jakarta.validation.Valid;
 
 @Controller
 public class ProfessorController {
@@ -41,22 +43,32 @@ public class ProfessorController {
 		
 	}
 	
-	@GetMapping("/professor/new")
-	public ModelAndView novo() {
+	@GetMapping("/professores/new")
+	public ModelAndView novo(RequisicaoNovoProfessor requisiscao) {
 		ModelAndView mv = new ModelAndView("professores/new");
-		mv.addObject("statusProfessor", StatusProfessor.values());
+		mv.addObject("listaStatusProfessor", StatusProfessor.values());
 				
 		return mv;
 		
 	}
 	@PostMapping("/professores")
-	public String create(RequisicaoNovoProfessor requisiscao) {
-		Professor professor = requisiscao.toProfessor();
+	public ModelAndView create(@Valid RequisicaoNovoProfessor requisiscao, BindingResult bindingResult) {
+		if(bindingResult.hasErrors()) {
+			System.out.print("TEM ERROS");
+			
+			ModelAndView mv = new ModelAndView("professores/new");
+			//Reenviando a colection de statusprofessor
+			mv.addObject("listaStatusProfessor", StatusProfessor.values());
+			return  mv;
+		}else {
+			Professor professor = requisiscao.toProfessor();
+			
+			this.professorRepository.save(professor);
+						
+			return new ModelAndView("redirect:/professores");
+		}
 		
-		this.professorRepository.save(professor);
 		
-		
-		return "redirect:/professores";
 	}
 
 }
