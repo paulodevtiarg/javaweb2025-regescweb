@@ -3,10 +3,20 @@ import java.math.BigDecimal;
 
 import br.com.xavecoding.models.Professor;
 import br.com.xavecoding.models.StatusProfessor;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 //Classe DTO: Data Transfer Object
 public class RequisicaoNovoProfessor {
-	private String nome;	
+	
+
+	@NotBlank(message = "O Nome do Professor não pode estar vazio!")
+    @NotNull(message = "O Nome do Professor não pode ser nulo!")
+	private String nome;
+
+	@NotNull(message = "O Salário do Professor não pode ser vazio!")
+	@DecimalMin("0.0")
 	private BigDecimal salario;
 	private StatusProfessor statusProfessor;
 	
@@ -32,7 +42,7 @@ public class RequisicaoNovoProfessor {
 	
 	public Professor toProfessor() {
 		Professor professor = new Professor();
-		professor.setNome(this.nome);
+		professor.setNome(this.nome.toUpperCase());
 		professor.setSalario(this.salario);
 		professor.setStatusProfessor(this.statusProfessor);
 		
