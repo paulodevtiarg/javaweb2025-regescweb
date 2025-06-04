@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 //Classe DTO: Data Transfer Object
-public class RequisicaoNovoProfessor {
+public class RequisicaoFormProfessor {
 	
 
 	@NotBlank(message = "O Nome do Professor não pode estar vazio!")
@@ -49,6 +49,19 @@ public class RequisicaoNovoProfessor {
 		return professor;
 	}
 	
+	public void fromProfessor(Professor professor) {
+		this.nome = professor.getNome();
+		this.salario = professor.getSalario();
+		this.statusProfessor = professor.getStatusProfessor();
+	}
+	
+	public Professor toProfessor(Professor professor) {
+		professor.setNome(this.nome);
+		professor.setSalario(this.salario);
+		professor.setStatusProfessor(this.statusProfessor);
+		
+		return professor;
+	}
 	@Override
 	public String toString() {
 		return "RequisicaoNovoProfessor [nome=" + nome + ", salario=" + salario + ", statusProfessor=" + statusProfessor
